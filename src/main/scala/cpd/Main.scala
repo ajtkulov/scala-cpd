@@ -1,8 +1,10 @@
 package cpd
 
+import scalariform.formatter.preferences.IFormattingPreferences
 import scalariform.lexer._
 import scalariform.parser._
-
+import scalariform.formatter._
+import scalariform.formatter.preferences
 
 object Main extends App {
 
@@ -11,10 +13,10 @@ object Main extends App {
       """package some
         |
         |import org.scala.test
-        |
+        |import test.test
         | // test comment
         |object X {
-        |  val z: Int = 1
+        |         val z: Int = 1
         |
         |
         |}
@@ -24,6 +26,8 @@ object Main extends App {
 
     println()
     println(removeRedundancy(res))
+
+    println(ScalaFormatter.format(s))
   }
 
   private def parser(s: String) = new ScalaParser(ScalaLexer.tokenise(s).toArray)
