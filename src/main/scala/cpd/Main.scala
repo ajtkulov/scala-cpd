@@ -1,53 +1,23 @@
 package cpd
 
-import scalariform.formatter.preferences.IFormattingPreferences
-import scalariform.lexer._
-import scalariform.parser._
-import scalariform.formatter._
-import scalariform.formatter.preferences
+import scala.reflect.runtime.universe._
+import scala.tools.reflect.ToolBox
 
 object Main extends App {
 
   override def main(args: Array[String]): Unit = {
     val s =
-      """package some
+      """
+        |import scala.reflect.runtime.universe._
         |
-        |import org.scala.test
-        |import test.test
-        | // test comment
-        |object X {
-        |         val z: Int = 1
-        |
-        |
-        |}
+        |// wr
+        |object X { val z: Int = 1}
       """.stripMargin
-    val res = parseCompilationUnit(s)
-    println(res)
 
-    println()
-    println(removeRedundancy(res))
+    val tree = Apply(Select(Ident(TermName("x")), TermName("$plus")), List(Literal(Constant(2))))
 
-    println(ScalaFormatter.format(s))
-  }
-
-  private def parser(s: String) = new ScalaParser(ScalaLexer.tokenise(s).toArray)
-  private def parseExpression(s: String) = parser(s).expr
-  private def parseCompilationUnit(s: String) = parser(s).compilationUnit
-
-  def removeRedundancy(ast: AstNode): AstNode = {
-    ast match {
-      case CompilationUnit(StatSeq(z,Some(PackageStat(_, _)), y), x) => CompilationUnit(StatSeq(z, None, removeRedundancy(y)), x)
-      case x => x
-    }
-  }
-
-  def removeRedundancy(list: List[(Token, Option[Stat])]): List[(Token, Option[Stat])] = {
-    list.filter(x => {
-      val res = x._2 match {
-        case Some(ImportClause(_, _, _)) => true
-        case _ => false
-      }
-      !res
-    })
+    val tb = runtimeMirror(getClass.getClassLoader).mkToolBox()
+    val q = showRaw(tb.parse(s))
+    println(q)
   }
 }
