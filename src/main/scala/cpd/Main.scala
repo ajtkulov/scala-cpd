@@ -12,14 +12,16 @@ object Main extends App {
     val traverser = new Traverse(tree)
     val traverser1 = new Traverse(tree1)
 
-    val inter = traverser1.vals.toSeq.map(x => x.toString()).intersect(traverser.vals.toSeq.map(x => x.toString()))
-    println(inter.mkString("\n"))
+    val inter = traverser1.blocks.toSeq.map(x => x.toString()).intersect(traverser.blocks.toSeq.map(x => x.toString()))
+    println(inter.mkString("\n\n"))
   }
 
   class Traverse(tree: Tree) extends Traverser {
     var applies = List[Apply]()
-    var defs    = List[DefDef]()
-    var vals    = List[ValDef]()
+    var defs = List[DefDef]()
+    var vals = List[ValDef]()
+    var funs = List[Function]()
+    var blocks = List[Block]()
 
     traverse(tree)
 
@@ -36,6 +38,13 @@ object Main extends App {
         vals = vals.::(val1)
         super.traverse(tree1)
         super.traverse(tree2)
+      case fun @ Function(params, tree) =>
+        funs = funs.::(fun)
+        super.traverse(tree)
+      case block @ Block(stat, tree) =>
+        blocks = blocks.::(block)
+        super.traverseTrees(stat)
+        super.traverse(tree)
 
       case _ => super.traverse(tree)
     }
