@@ -1,5 +1,7 @@
 package cpd
 
+import cpd.ExprType.ExprType
+
 import scala.reflect.runtime.universe._
 import scala.tools.reflect.ToolBox
 
@@ -9,42 +11,56 @@ object Main extends App {
     val tree = parse(FileUtils.fromFileAsString("src/main/resources/1.scala"))
     val tree1 = parse(FileUtils.fromFileAsString("src/main/resources/2.scala"))
 
-    val traverser = new Traverse(tree)
-    val traverser1 = new Traverse(tree1)
+    val traverser = new Traverse(tree, "1.scala")
+    val traverser1 = new Traverse(tree1, "2.scala")
 
-    val inter = traverser1.blocks.toSeq.map(x => x.toString()).intersect(traverser.blocks.toSeq.map(x => x.toString()))
-    println(inter.mkString("\n\n"))
+    val res: Map[(String, ExprType), (String, String, Int)] = traverser.cache.intersect(traverser1.cache)
+    println(res.mkString("\n"))
+
   }
 
-  class Traverse(tree: Tree) extends Traverser {
-    var applies = List[Apply]()
-    var defs = List[DefDef]()
-    var vals = List[ValDef]()
-    var funs = List[Function]()
-    var blocks = List[Block]()
+  class Traverse(tree: Tree, fileName: String) extends Traverser {
+    val cache = new Cache()
 
     traverse(tree)
 
     override def traverse(tree: Tree): Unit = tree match {
       case app @ Apply(fun, args) =>
-        applies = app :: applies
+        cache.addExpr(app, ExprType.Apply, fileName)
         super.traverse(fun)
         super.traverseTrees(args)
       case def1 @ DefDef(mod, term, types, vals, tree1, tree2) =>
-        defs = defs.::(def1)
+        cache.addExpr(def1, ExprType.Def, fileName)
         super.traverse(tree1)
         super.traverse(tree2)
       case val1 @ ValDef(mod, term, tree1, tree2) =>
-        vals = vals.::(val1)
+        cache.addExpr(val1, ExprType.Val, fileName)
         super.traverse(tree1)
         super.traverse(tree2)
       case fun @ Function(params, tree) =>
-        funs = funs.::(fun)
+        cache.addExpr(fun, ExprType.Fun, fileName)
         super.traverse(tree)
       case block @ Block(stat, tree) =>
-        blocks = blocks.::(block)
+        cache.addExpr(block, ExprType.Block, fileName)
         super.traverseTrees(stat)
         super.traverse(tree)
+
+      case _ => super.traverse(tree)
+    }
+  }
+
+  class TreeSize(tree: Tree) extends Traverser {
+    var _size: Int = 0
+
+    def size: Int = _size
+
+    traverse(tree)
+
+    override def traverse(tree: Tree): Unit = tree match {
+      case Ident(_) =>
+        _size += 1
+      case TermName(_) =>
+        _size += 1
 
       case _ => super.traverse(tree)
     }
