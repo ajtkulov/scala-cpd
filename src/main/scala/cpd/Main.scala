@@ -44,6 +44,20 @@ object Main extends App {
         cache.addExpr(block, ExprType.Block, fileName)
         super.traverseTrees(stat)
         super.traverse(tree)
+      case if1 @ If(cond, then1, else1) =>
+        cache.addExpr(if1, ExprType.If, fileName)
+        super.traverse(cond)
+        super.traverse(then1)
+        super.traverse(else1)
+      case match1 @ Match(selector, cases) =>
+        cache.addExpr(match1, ExprType.Match, fileName)
+        super.traverse(selector)
+        super.traverseTrees(cases)
+      case case1 @ CaseDef(pat, guard, body) =>
+        cache.addExpr(case1, ExprType.Case, fileName)
+        super.traverse(pat)
+        super.traverse(guard)
+        super.traverse(body)
 
       case _ => super.traverse(tree)
     }
@@ -60,6 +74,8 @@ object Main extends App {
       case Ident(_) =>
         _size += 1
       case TermName(_) =>
+        _size += 1
+      case Literal(_) =>
         _size += 1
 
       case _ => super.traverse(tree)

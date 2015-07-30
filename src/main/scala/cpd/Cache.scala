@@ -15,6 +15,9 @@ object ExprType extends Enumeration {
   val Def = Value("Def")
   val Val = Value("Val")
   val Fun = Value("Fun")
+  val If = Value("If")
+  val Match = Value("Match")
+  val Case = Value("Case")
 }
 
 case class Value1(fileName: String, tree: Tree, size: Int) {}
