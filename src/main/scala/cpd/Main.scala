@@ -16,7 +16,6 @@ object Main extends App {
 
     val res: Map[(String, ExprType), (String, String, Int)] = traverser.cache.intersect(traverser1.cache)
     println(res.mkString("\n"))
-
   }
 
   class Traverse(tree: Tree, fileName: String) extends Traverser {
