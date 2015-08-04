@@ -82,8 +82,8 @@ object Main extends App {
     override def traverse(tree: Tree): Unit = tree match {
       case Ident(_) =>
         _size += 1
-      case TermName(_) =>
-        _size += 1
+//      case TermName(_) =>
+//        _size += 1
       case Literal(_) =>
         _size += 1
 
