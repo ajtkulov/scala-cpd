@@ -1,3 +1,5 @@
+sbtPlugin := true
+
 name := "scala-cpd"
 
 version := "1.0"
