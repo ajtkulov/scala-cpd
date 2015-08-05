@@ -8,7 +8,7 @@ import sbt.complete.Parsers._
 object CommandPlugin extends AutoPlugin {
 
   object autoImport {
-    val cpd = inputKey[Unit]("Prints RSS")
+    val cpd = inputKey[Unit]("Copy-paste detector")
   }
 
   import autoImport._
@@ -19,9 +19,13 @@ object CommandPlugin extends AutoPlugin {
     rssSetting)
 
   def rssSetting: Setting[_] = cpd := {
+
     val args: Seq[String] = argsParser.parsed
 
-    println(args.mkString(" "))
+    val path =  args.headOption.getOrElse(s"${new File(".").getAbsolutePath.dropRight(2)}/src/main")
+
+    Main.main(Array[String](path))
+
     val log = streams.value.log
     log.debug(s"args = $args")
 

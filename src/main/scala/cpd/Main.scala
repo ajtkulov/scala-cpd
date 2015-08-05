@@ -7,7 +7,7 @@ import scala.tools.reflect.ToolBox
 
 object Main extends App {
   override def main(args: Array[String]): Unit = {
-    val path = "src/main/resources"
+    val path = args.headOption.getOrElse("src/main/resources")
     val files = FileUtils.filesInDirectory(path).map(x => x.getAbsolutePath).filter(x => x.endsWith(".scala"))
 
     val traverse = new Traverse()
