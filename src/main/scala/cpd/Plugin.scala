@@ -22,9 +22,11 @@ object CommandPlugin extends AutoPlugin {
 
     val args: Seq[String] = argsParser.parsed
 
-    val path =  args.headOption.getOrElse(s"${new File(".").getAbsolutePath.dropRight(2)}/src/main")
+    val path = args.headOption.getOrElse(s"${new File(".").getAbsolutePath.dropRight(2)}/src/main")
 
-    Main.main(Array[String](path))
+    val errorLevel = args.lastOption.getOrElse("10")
+
+    Main.main(Array[String](path, errorLevel))
 
     val log = streams.value.log
     log.debug(s"args = $args")

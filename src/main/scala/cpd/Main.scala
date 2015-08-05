@@ -18,22 +18,24 @@ object Main extends App {
 
     val res: Map[(String, ExprType), (String, String, Int)] = traverse.cache.result
 
-    val filter = Map[ExprType, Int]().withDefaultValue(10)
+    val errorLevel: Int = args.lastOption.map(_.toInt).getOrElse(10)
+    val filter = Map[ExprType, Int]().withDefaultValue(errorLevel)
 
     val filtered = res.filter(x => filter(x._1._2) <= x._2._3)
 
     val xml =
-    <cpd>
-      {for (item <- filtered) yield
-        <item weigth={item._2._3.toString} file1={item._2._1} file2={item._2._2} type={item._1._2.toString}>
-          <code>
-            {scala.xml.PCData(item._1._1)}
-          </code>
-        </item>
-      }
-    </cpd>
+<cpd>
+{
+for (item <- filtered) yield
+<item weigth={ item._2._3.toString } file1={ item._2._1 } file2={ item._2._2 } type={ item._1._2.toString }>
+  <code>
+    { scala.xml.PCData(item._1._1) }
+  </code>
+</item> }
+</cpd>
+    val printer = new scala.xml.PrettyPrinter(800, 2)
 
-    FileUtils.write("target/cpd-result.xml", Iterator.single(xml.toString))
+    FileUtils.write("target/cpd-result.xml", Iterator.single(printer.format(xml)))
   }
 
   class Traverse() extends Traverser {
@@ -94,8 +96,8 @@ object Main extends App {
     override def traverse(tree: Tree): Unit = tree match {
       case Ident(_) =>
         _size += 1
-//      case TermName(_) =>
-//        _size += 1
+      //      case TermName(_) =>
+      //        _size += 1
       case Literal(_) =>
         _size += 1
 
