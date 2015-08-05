@@ -21,7 +21,7 @@ object Main extends App {
     val filter = Map[ExprType, Int]().withDefaultValue(10)
 
     val filtered = res.filter(x => filter(x._1._2) <= x._2._3)
-    println(filtered.mkString("\n"))
+    println(filtered.mkString("\n\n\n"))
   }
 
   class Traverse() extends Traverser {

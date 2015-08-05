@@ -2,31 +2,26 @@ package cpd
 
 import sbt._
 import Keys._
+import sbt.complete.Parser
 import sbt.complete.Parsers._
-
-import java.net.URL
-
-import scala.util.control.NonFatal
 
 object CommandPlugin extends AutoPlugin {
 
   object autoImport {
-    val rssList = settingKey[Seq[String]]("The list of RSS urls to update.")
-    val rss = inputKey[Unit]("Prints RSS")
+    val cpd = inputKey[Unit]("Prints RSS")
   }
 
   import autoImport._
 
-  private val argsParser = (Space ~> StringBasic).*
+  private val argsParser: Parser[Seq[String]] = (Space ~> StringBasic).*
 
   override def projectSettings: Seq[Setting[_]] = Seq(
-    rssSetting
-  )
+    rssSetting)
 
-  def rssSetting: Setting[_] = rss := {
-    // Parse the input string into space-delimited strings.
-    val args = argsParser.parsed
-    // Sbt provided logger.
+  def rssSetting: Setting[_] = cpd := {
+    val args: Seq[String] = argsParser.parsed
+
+    println(args.mkString(" "))
     val log = streams.value.log
     log.debug(s"args = $args")
 

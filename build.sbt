@@ -1,5 +1,7 @@
 sbtPlugin := true
 
+organization := "ajtkulov"
+
 name := "scala-cpd"
 
 version := "1.0"
@@ -13,3 +15,7 @@ libraryDependencies += "com.typesafe" % "config" % "1.2.1"
 parallelExecution in Test := false
 
 fork := true
+
+
+val myProject = (project in file(".")).enablePlugins(CommandPlugin)
+
