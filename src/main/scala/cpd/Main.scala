@@ -21,7 +21,19 @@ object Main extends App {
     val filter = Map[ExprType, Int]().withDefaultValue(10)
 
     val filtered = res.filter(x => filter(x._1._2) <= x._2._3)
-    println(filtered.mkString("\n\n\n"))
+
+    val xml =
+    <cpd>
+      {for (item <- filtered) yield
+        <item weigth={item._2._3.toString} file1={item._2._1} file2={item._2._2} type={item._1._2.toString}>
+          <code>
+            {scala.xml.PCData(item._1._1)}
+          </code>
+        </item>
+      }
+    </cpd>
+
+    FileUtils.write("target/cpd-result.xml", Iterator.single(xml.toString))
   }
 
   class Traverse() extends Traverser {
