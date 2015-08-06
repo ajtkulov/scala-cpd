@@ -17,5 +17,5 @@ parallelExecution in Test := false
 fork := true
 
 
-//val myProject = (project in file(".")).enablePlugins(CommandPlugin)
+//val myProject = (project in file(".")).enablePlugins(CpdPlugin)
 

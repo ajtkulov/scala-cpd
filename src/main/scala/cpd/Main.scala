@@ -7,8 +7,10 @@ import scala.tools.reflect.ToolBox
 
 object Main extends App {
   override def main(args: Array[String]): Unit = {
-    val path = args.headOption.getOrElse("src/main/resources")
-    val files = FileUtils.filesInDirectory(path).map(x => x.getAbsolutePath).filter(x => x.endsWith(".scala"))
+  }
+
+  def handle(source: String, errorLevel: Int, target: String): Unit = {
+    val files = FileUtils.filesInDirectory(source).map(x => x.getAbsolutePath).filter(x => x.endsWith(".scala"))
 
     val traverse = new Traverse()
 
@@ -18,24 +20,23 @@ object Main extends App {
 
     val res: Map[(String, ExprType), (String, String, Int)] = traverse.cache.result
 
-    val errorLevel: Int = args.lastOption.map(_.toInt).getOrElse(10)
     val filter = Map[ExprType, Int]().withDefaultValue(errorLevel)
 
     val filtered = res.filter(x => filter(x._1._2) <= x._2._3)
 
     val xml =
-<cpd>
-{
-for (item <- filtered) yield
-<item weigth={ item._2._3.toString } file1={ item._2._1 } file2={ item._2._2 } type={ item._1._2.toString }>
-  <code>
-    { scala.xml.PCData(item._1._1) }
-  </code>
-</item> }
-</cpd>
+      <cpd>
+        {
+        for (item <- filtered) yield
+        <item errorWeigth={ item._2._3.toString } file1={ item._2._1 } file2={ item._2._2 } type={ item._1._2.toString }>
+          <code>
+            { scala.xml.PCData(item._1._1) }
+          </code>
+        </item> }
+      </cpd>
     val printer = new scala.xml.PrettyPrinter(800, 2)
 
-    FileUtils.write("target/cpd-result.xml", Iterator.single(printer.format(xml)))
+    FileUtils.write(s"${target}/cpd-result.xml", Iterator.single(printer.format(xml)))
   }
 
   class Traverse() extends Traverser {
