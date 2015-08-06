@@ -11,4 +11,4 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.7.0")
 addSbtPlugin("com.gu" % "sbt-teamcity-test-reporting-plugin" % "1.5")
 
 
-//addSbtPlugin("ajtkulov" % "scala-cpd" % "1.0")
+//addSbtPlugin("com.github.ajtkulov" % "scala-cpd" % "0.1")

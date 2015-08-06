@@ -9,8 +9,8 @@ object Main extends App {
   override def main(args: Array[String]): Unit = {
   }
 
-  def handle(source: String, errorLevel: Int, target: String): Unit = {
-    val files = FileUtils.filesInDirectory(source).map(x => x.getAbsolutePath).filter(x => x.endsWith(".scala"))
+  def handle(sourceDir: String, errorLevel: Int, outputFileName: String): Unit = {
+    val files = FileUtils.filesInDirectory(sourceDir).map(x => x.getAbsolutePath).filter(x => x.endsWith(".scala"))
 
     val traverse = new Traverse()
 
@@ -36,7 +36,7 @@ object Main extends App {
       </cpd>
     val printer = new scala.xml.PrettyPrinter(800, 2)
 
-    FileUtils.write(s"${target}/cpd-result.xml", Iterator.single(printer.format(xml)))
+    FileUtils.write(outputFileName, Iterator.single(printer.format(xml)))
   }
 
   class Traverse() extends Traverser {

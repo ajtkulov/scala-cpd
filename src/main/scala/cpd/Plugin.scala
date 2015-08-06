@@ -38,10 +38,13 @@ object CpdPlugin extends AutoPlugin {
       10
     }
 
-    Main.handle((sourceDirectory in Compile).value.getAbsolutePath, errorLevel, (target in Compile).value.getAbsolutePath)
-
     val log = streams.value.log
-    log.debug(s"args = $args")
+
+    val result: String = s"${(target in Compile).value.getAbsolutePath}/cpd-result.xml"
+    log.info(s"Parse scala files in path: ${path} with errorLevel: ${errorLevel}")
+    Main.handle(path, errorLevel, result)
+
+    log.info(s"Created output: ${result}")
 
     ()
   }
