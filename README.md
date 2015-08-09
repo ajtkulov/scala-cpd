@@ -7,9 +7,7 @@ This is plugin for sbt.
 Usage
 ========
 
-* Download this repo.
-* Execute `sbt publishLocal`
-* Add plugin in your `/project/plugins.sbt`: `addSbtPlugin("com.github.ajtkulov" % "scala-cpd % "0.1")`
+* Add plugin in your `/project/plugins.sbt`: `addSbtPlugin("com.github.ajtkulov" % "scala-cpd" % "0.1")`
 * Add plugin usage in `/build.sbt`: `val myProject = (project in file(".")).enablePlugins(CpdPlugin)`
 
 Now `cpd` command available in sbt.
@@ -34,3 +32,9 @@ Result located in `project/target/cpd-result.xml` and looks like
 ```
 
 `code` tag contains duplicate source code.
+
+Settings
+========
+
+* `sbt> cpd --errorLevel 1`. Find code blocks with size specific limit.
+* `sbt> cpd --source /path/to/another/project`. Run cpd-tool for specific folder.
