@@ -12,3 +12,7 @@ addSbtPlugin("com.gu" % "sbt-teamcity-test-reporting-plugin" % "1.5")
 
 
 //addSbtPlugin("com.github.ajtkulov" % "scala-cpd" % "0.1")
+
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "0.5.0")
+
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0") 
