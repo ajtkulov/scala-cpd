@@ -6,9 +6,11 @@ import sbt.complete.Parser
 import sbt.complete.Parsers._
 
 object CpdPlugin extends AutoPlugin {
+  val defaultExceptFile: String = "cpd-except.xml"
 
   object autoImport {
     val cpd = inputKey[Unit]("Copy-paste detector")
+    val cpdGenExceptFile = inputKey[Unit]("Copy-paste detector: generate empty except file")
   }
 
   import autoImport._
@@ -16,7 +18,7 @@ object CpdPlugin extends AutoPlugin {
   private val argsParser: Parser[Seq[String]] = (Space ~> StringBasic).*
 
   override def projectSettings: Seq[Setting[_]] = Seq(
-    cpdSetting)
+    cpdSetting, cpdGenExceptFileSetting)
 
   def cpdSetting: Setting[_] = cpd := {
 
@@ -32,7 +34,6 @@ object CpdPlugin extends AutoPlugin {
 
     val exceptIdx: Int = args.indexOf("--except")
 
-    val defaultExceptFile: String = "cpd-except.xml"
     val exceptPath: Option[String] = if (exceptIdx >= 0 && FileUtils.isFileExist(args(exceptIdx + 1))) {
       Some(args(exceptIdx + 1))
     } else if (FileUtils.isFileExist(defaultExceptFile)) {
@@ -57,6 +58,23 @@ object CpdPlugin extends AutoPlugin {
 
     log.info(s"Created output: ${result}")
 
+    ()
+  }
+
+  def cpdGenExceptFileSetting: Setting[_] = cpdGenExceptFile := {
+    val log = streams.value.log
+    val xml = """<cpd>
+      |  <except>
+      |    <![CDATA[code1]]>
+      |  </except>
+      |  <except>
+      |    <![CDATA[code2]]>
+      |  </except>
+      |</cpd>
+    """.stripMargin
+      FileUtils.write(defaultExceptFile, Iterator.single(xml))
+
+    log.info(s"Default except file has been created: ${defaultExceptFile}")
     ()
   }
 }

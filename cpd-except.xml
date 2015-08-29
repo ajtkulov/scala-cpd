@@ -1,8 +1,9 @@
 <cpd>
-<except>
-<![CDATA[(x => x + 1)]]>
-</except>
-<except>
-<![CDATA[code]]>
-</except>
+  <except>
+    <![CDATA[code1]]>
+  </except>
+  <except>
+    <![CDATA[code2]]>
+  </except>
 </cpd>
+    
