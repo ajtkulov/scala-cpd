@@ -15,6 +15,10 @@ object FileUtils {
     recursiveListFiles(new File(dirName))
   }
 
+  def isFileExist(fileName: FileName): Boolean = {
+    new java.io.File(fileName).exists
+  }
+
   private def recursiveListFiles(f: File): Array[File] = {
     val these = f.listFiles
     these ++ these.filter(_.isDirectory).flatMap(recursiveListFiles)

@@ -11,7 +11,7 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.7.0")
 addSbtPlugin("com.gu" % "sbt-teamcity-test-reporting-plugin" % "1.5")
 
 
-//addSbtPlugin("com.github.ajtkulov" % "scala-cpd" % "0.1")
+//addSbtPlugin("com.github.ajtkulov" % "scala-cpd" % "0.2")
 
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "0.5.0")
 

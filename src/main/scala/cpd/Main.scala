@@ -2,33 +2,46 @@ package cpd
 
 import cpd.ExprType.ExprType
 
+import scala.collection.immutable.Seq
 import scala.reflect.runtime.universe._
 import scala.tools.reflect.ToolBox
+import scala.xml.XML
 
 object Main extends App {
   override def main(args: Array[String]): Unit = {
   }
 
-  def handle(sourceDir: String, errorLevel: Int, outputFileName: String): Unit = {
+  def normalizeCode(code: String): String = {
+    code.filterNot(x => "\r\t\n ".contains(x))
+  }
+
+  def readExceptionInstances(fileName: String): Seq[String] = {
+    (XML.loadFile(fileName) \\ "except").map(x => x.text).map(x => normalizeCode(x))
+  }
+
+  def handle(sourceDir: String, errorLevel: Int, outputFileName: String, exceptFile: Option[String] = None): Unit = {
     val files = FileUtils.filesInDirectory(sourceDir).map(x => x.getAbsolutePath).filter(x => x.endsWith(".scala"))
 
     val traverse = new Traverse()
 
     files.foreach { fileName =>
-      traverse.addFile(parse(FileUtils.fromFileAsString(fileName)), fileName)
+      val parsed = parse(FileUtils.fromFileAsString(fileName))
+      if (parsed.isSuccess) {
+        traverse.addFile(parsed.get, fileName)
+      }
     }
+
+    val exceptSet: Set[String] = exceptFile.map(x => readExceptionInstances(x)).getOrElse(Nil).toSet
 
     val res: Map[(String, ExprType), (String, String, Int)] = traverse.cache.result
 
     val filter = Map[ExprType, Int]().withDefaultValue(errorLevel)
 
-    val filtered = res.filter(x => filter(x._1._2) <= x._2._3)
+    val filtered: List[((String, ExprType), (String, String, Int))] = res.filter(x => filter(x._1._2) <= x._2._3).toList.filterNot(x => exceptSet.contains(normalizeCode(x._1._1)))
 
     val xml =
       <cpd>
-        {
-        for (item <- filtered) yield
-        <item errorWeigth={ item._2._3.toString } file1={ item._2._1 } file2={ item._2._2 } type={ item._1._2.toString }>
+        { for (item <- filtered) yield <item errorWeigth={ item._2._3.toString } file1={ item._2._1 } file2={ item._2._2 } type={ item._1._2.toString }>
           <code>
             { scala.xml.PCData(item._1._1) }
           </code>
@@ -106,10 +119,12 @@ object Main extends App {
     }
   }
 
-  def parse(source: String): Tree = {
-    val s = source.split("\n").filter(x => !x.startsWith("package ")).mkString("\n")
-    val tb = runtimeMirror(getClass.getClassLoader).mkToolBox()
-    tb.parse(s)
+  def parse(source: String): scala.util.Try[Tree] = {
+    scala.util.Try {
+      val s = source.split("\n").filter(x => !x.startsWith("package ")).mkString("\n")
+      val tb = runtimeMirror(getClass.getClassLoader).mkToolBox()
+      tb.parse(s)
+    }
   }
 }
 

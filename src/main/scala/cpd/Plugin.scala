@@ -30,6 +30,17 @@ object CpdPlugin extends AutoPlugin {
       (sourceDirectory in Compile).value.getAbsolutePath
     }
 
+    val exceptIdx: Int = args.indexOf("--except")
+
+    val defaultExceptFile: String = "cpd-except.xml"
+    val exceptPath: Option[String] = if (exceptIdx >= 0 && FileUtils.isFileExist(args(exceptIdx + 1))) {
+      Some(args(exceptIdx + 1))
+    } else if (FileUtils.isFileExist(defaultExceptFile)) {
+      Some(defaultExceptFile)
+    } else {
+      None
+    }
+
     val errorLevelIdx = args.indexOf("--errorLevel")
 
     val errorLevel = if (errorLevelIdx >= 0) {
@@ -41,8 +52,8 @@ object CpdPlugin extends AutoPlugin {
     val log = streams.value.log
 
     val result: String = s"${(target in Compile).value.getAbsolutePath}/cpd-result.xml"
-    log.info(s"Parse scala files in path: ${path} with errorLevel: ${errorLevel}")
-    Main.handle(path, errorLevel, result)
+    log.info(s"Parse scala files in path: ${path} with errorLevel: ${errorLevel} with exceptFile: ${exceptPath.getOrElse("None")}")
+    Main.handle(path, errorLevel, result, exceptPath)
 
     log.info(s"Created output: ${result}")
 
