@@ -7,7 +7,7 @@ This is plugin for sbt.
 Usage
 ========
 
-* Add plugin in your `/project/plugins.sbt`: `addSbtPlugin("com.github.ajtkulov" % "scala-cpd" % "0.1")`
+* Add plugin in your `/project/plugins.sbt`: `addSbtPlugin("com.github.ajtkulov" % "scala-cpd % "0.2")`
 * Add plugin usage in `/build.sbt`: `val myProject = (project in file(".")).enablePlugins(CpdPlugin)`
 
 Now `cpd` command available in sbt.
@@ -31,10 +31,28 @@ Result located in `project/target/cpd-result.xml` and looks like
 <cpd>
 ```
 
-`code` tag contains duplicate source code.
+Except file
+========
+
+* `sbt> cpdGenExceptFile`. Generate default except file.
+
+Format:
+```
+<cpd>
+  <except>
+    <![CDATA[code1]]>
+  </except>
+  <except>
+    <![CDATA[code2]]>
+  </except>
+</cpd>
+```
+
+Contains code instances that should be excluded from final results.
 
 Settings
 ========
 
 * `sbt> cpd --errorLevel 1`. Find code blocks with size specific limit.
 * `sbt> cpd --source /path/to/another/project`. Run cpd-tool for specific folder.
+* `sbt> cpd --except cpd-except.xml`. Run cpd-tool for specific except file.
