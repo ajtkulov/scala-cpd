@@ -41,7 +41,7 @@ object Main extends App {
 
     val xml =
       <cpd>
-        { for (item <- filtered) yield <item errorWeigth={ item._2._3.toString } file1={ item._2._1 } file2={ item._2._2 } type={ item._1._2.toString }>
+        { for (item <- filtered) yield <item errorWeight={ item._2._3.toString } file1={ item._2._1 } file2={ item._2._2 } type={ item._1._2.toString }>
           <code>
             { scala.xml.PCData(item._1._1) }
           </code>
