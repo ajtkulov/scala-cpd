@@ -1,26 +1,15 @@
-sbtPlugin := true
+//sbtPlugin := true
 
 organization := "com.github.ajtkulov"
 
 name := "scala-cpd"
 
-version := "0.2"
+version := "0.3"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.7"
 
-libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
-
-libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.10.4"
-
-libraryDependencies += "org.scala-lang" % "scala-compiler" % "2.10.4"
-
-
-libraryDependencies += "com.typesafe" % "config" % "1.2.1"
+libraryDependencies += "org.scalameta" %% "scalameta" % "1.0.0"
 
 parallelExecution in Test := false
 
 fork := true
-
-
-//val myProject = (project in file(".")).enablePlugins(CpdPlugin)
-
