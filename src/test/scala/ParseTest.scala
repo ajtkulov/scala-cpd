@@ -1,4 +1,4 @@
-import cpd.Some1
+import cpd.{Project, Some1, SourceFile}
 import org.scalatest.FunSuite
 
 class ParseTest extends FunSuite {
@@ -18,5 +18,18 @@ class ParseTest extends FunSuite {
                 """)
 
     assert(Some1.size(stat) >= 5)
+  }
+
+//  test("Some") {
+////    val source = SourceFile("/Users/pavel/code/scala-cpd/src/test/scala/ParseTest.scala")
+//    val source = SourceFile("/Users/pavel/tmp/1.scala")
+//    val strings: List[String] = source.subTrees.map(x => Some1.normalize(x))
+//    strings.foreach(println)
+//  }
+
+  test("Project") {
+    val project = Project(List("/Users/pavel/tmp/1.scala"))
+    val res = project.handle()
+    println(res.mkString("\n"))
   }
 }
