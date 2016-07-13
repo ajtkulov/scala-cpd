@@ -1,5 +1,7 @@
-import cpd.{Project, Some1, SourceFile}
+import cpd.Some1
 import org.scalatest.FunSuite
+
+import scala.meta.Tree
 
 class ParseTest extends FunSuite {
   test("Normalize") {
@@ -20,16 +22,26 @@ class ParseTest extends FunSuite {
     assert(Some1.size(stat) >= 5)
   }
 
-//  test("Some") {
-////    val source = SourceFile("/Users/pavel/code/scala-cpd/src/test/scala/ParseTest.scala")
-//    val source = SourceFile("/Users/pavel/tmp/1.scala")
-//    val strings: List[String] = source.subTrees.map(x => Some1.normalize(x))
-//    strings.foreach(println)
-//  }
+  test("SubBlock") {
+    val source = Some1.parse("""object z {
+                {
+                println(1)
+                println(2)
+                println(3)
+                println(4)
+                println(5)
+                println(6)
+                println(7)
+                println(8)
+                println(9)
+                }
+      }
+                             """)
+    val traverse: List[Tree] = Some1.traverse(source)
+    val normalized: List[String] = traverse.map(x => Some1.normalize(x))
 
-  test("Project") {
-    val project = Project(List("/Users/pavel/tmp/1.scala"))
-    val res = project.handle()
-    println(res.mkString("\n"))
+    assert(normalized.contains("{println(1)println(2)println(3)println(4)println(5)}"))
+    assert(normalized.contains("{println(5)println(6)println(7)println(8)println(9)}"))
+    assert(!normalized.contains("{println(5)println(6)}"))
   }
 }

@@ -69,7 +69,7 @@ object Some1 {
             addTree(a)
             val stats = a.stats
 
-            for (i <- 0 until stats.size - 1; j <- i + 1 until stats.size) {
+            for (i <- 0 until stats.size - 1; j <- i + 1 to stats.size) {
               val sub: Seq[Stat] = stats.slice(i, j)
               addTree(Block(sub))
             }
