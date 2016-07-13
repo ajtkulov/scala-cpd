@@ -39,6 +39,7 @@ object Some1 {
   type Path = String
   type NormalizedSource = String
   lazy val minSize: Int = 10
+
   def normalize(tree: Tree): String = {
     tree.tokens.filterNot(x => x.is[Token.Space] || x.is[Token.Tab] || x.is[Token.CR] || x.is[Token.LF]).mkString("")
   }
@@ -59,7 +60,9 @@ object Some1 {
     val buffer = ArrayBuffer[Tree]()
 
     def addTree(tree: Tree): Unit = {
-      if (size(tree) > minSize) {buffer.append(tree) }
+      if (size(tree) > minSize) {
+        buffer.append(tree)
+      }
     }
 
     source.stats.foreach(stat =>

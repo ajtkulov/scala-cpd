@@ -5,25 +5,28 @@ import scala.meta.Tree
 
 class ParseTest extends FunSuite {
   test("Normalize") {
-    val source = Some1.parse("""object z {
+    val source = Some1.parse(
+      """object z {
                 val z: Int= 1
 
 }
-                """)
+      """)
 
     assert(Some1.normalize(source) == "objectz{valz:Int=1}")
   }
 
   test("Size") {
-    val stat = Some1.parseStat("""
+    val stat = Some1.parseStat(
+      """
                 val z = 1 + 2 + 3
-                """)
+      """)
 
     assert(Some1.size(stat) >= 5)
   }
 
   test("SubBlock") {
-    val source = Some1.parse("""object z {
+    val source = Some1.parse(
+      """object z {
                 {
                 println(1)
                 println(2)
@@ -36,7 +39,7 @@ class ParseTest extends FunSuite {
                 println(9)
                 }
       }
-                             """)
+      """)
     val traverse: List[Tree] = Some1.traverse(source)
     val normalized: List[String] = traverse.map(x => Some1.normalize(x))
 
